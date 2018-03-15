@@ -12,7 +12,7 @@ public class SudokuBoardTest {
             for (Field f2 : field) {
                 if (f1 != f2) {
                     if ((f1.getxAxis() == f2.getxAxis()) || (f1.getyAxis() == f2.getyAxis()) || (f1.getSector() == f2.getSector())) {
-                        Assert.assertFalse(1 == 0);
+                        Assert.assertFalse(f1.getValue() == f2.getValue());
                     }
                 }
             }
