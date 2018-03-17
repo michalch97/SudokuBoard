@@ -26,11 +26,11 @@ public class Field {
         return (this.xAxis - 1) / 3 + 1 + ((this.yAxis - 1) / 3) * 3;
     }
 
-    public int getxAxis() {
+    public int getXAxis() {
         return xAxis;
     }
 
-    public int getyAxis() {
+    public int getYAxis() {
         return yAxis;
     }
 

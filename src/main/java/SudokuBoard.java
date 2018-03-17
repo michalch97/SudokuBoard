@@ -6,7 +6,7 @@ public class SudokuBoard {
         for (Field f1 : board) {
             for (Field f2 : board) {
                 if (f1 != f2) {
-                    if ((f1.getxAxis() == f2.getxAxis()) || (f1.getyAxis() == f2.getyAxis()) || (f1.getSector() == f2.getSector())) {
+                    if ((f1.getXAxis() == f2.getXAxis()) || (f1.getYAxis() == f2.getYAxis()) || (f1.getSector() == f2.getSector())) {
                         if (f1.getValue() == f2.getValue()) {
                             return false;
                         }
@@ -19,11 +19,23 @@ public class SudokuBoard {
 
     public int get(int x, int y) {
         int index = (x - 1) + (y - 1) * 9;
+        return get(index);
+    }
+    
+    public int get(int index) {
         return board[index].getValue();
+    }
+    
+    public Field getField(int index) {
+        return board[index];
     }
 
     public void set(int x, int y, int value) {
         int index = (x - 1) + (y - 1) * 9;
+        set(index, value);
+    }
+    
+    public void set(int index, int value) {
         board[index] = new Field(index, value);
     }
 

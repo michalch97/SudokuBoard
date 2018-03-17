@@ -19,6 +19,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver {
         availableNumbersList = new LinkedList<List<Integer>>();
         counter = 0;
         rand = new Random();
+        
         for (int i = 1; i <= 81; i++) {
             List<Integer> availableNumbers = new LinkedList<Integer>();
             for (int j = 1; j <= 9; j++) {
@@ -26,16 +27,19 @@ public class BacktrackingSudokuSolver implements SudokuSolver {
             }
             availableNumbersList.add(availableNumbers);
         }
+        
         while (counter != 81) {
             int y = counter / 9 + 1;
             int x = counter - 9 * y + 10;
             if (!availableNumbersList.get(counter).isEmpty()) {
                 int k;
+                
                 if (availableNumbersList.get(counter).size() == 1) {
                     k = 0;
                 } else {
                     k = rand.nextInt(availableNumbersList.get(counter).size() - 1);
                 }
+                
                 int z = availableNumbersList.get(counter).get(k);
                 Field tempField = new Field(counter, z);
                 if (!conflict(tempField)) {
@@ -61,7 +65,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver {
             for (int y = 1; y <= 9; y++) {
                 if (sudokuBoard.checkNull(x, y)) {
                     sector = (x - 1) / 3 + 1 + ((y - 1) / 3) * 3;
-                    if ((x == field.getxAxis()) || (y == field.getyAxis()) || (sector == field.getSector())) {
+                    if ((x == field.getXAxis()) || (y == field.getYAxis()) || (sector == field.getSector())) {
                         if (sudokuBoard.get(x, y) == field.getValue()) {
                             return true;
                         }
