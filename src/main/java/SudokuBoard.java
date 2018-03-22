@@ -1,44 +1,64 @@
 public class SudokuBoard {
 
-    private Field[] board = new Field[81];
+    private SudokuField[] board = new SudokuField[81];
 
     public boolean checkBoard() {
-        for (Field f1 : board) {
-            for (Field f2 : board) {
-                if (f1 != f2) {
-                    if ((f1.getXAxis() == f2.getXAxis()) || (f1.getYAxis() == f2.getYAxis()) || (f1.getSector() == f2.getSector())) {
-                        if (f1.getValue() == f2.getValue()) {
-                            return false;
-                        }
-                    }
+        final int BOARD_SIDE_LENGTH = 9;
+        final int SECTOR_SIDE_LENGTH = 3;
+        
+        for (int i = 1; i <= BOARD_SIDE_LENGTH; i++) {
+            if (!(getRow(i).verify() && getColumn(i).verify())) {
+                return false;
+            }
+        }
+        
+        for (int i = 1; i <= SECTOR_SIDE_LENGTH; i++) {
+            for (int j = 0; j < SECTOR_SIDE_LENGTH; j++) {
+                if (!getBox(i * SECTOR_SIDE_LENGTH, j * SECTOR_SIDE_LENGTH).verify()) {
+                    return false;
                 }
             }
         }
+        
         return true;
     }
 
     public int get(int x, int y) {
-        int index = (x - 1) + (y - 1) * 9;
-        return get(index);
+        return get(getIndex(x, y));
     }
     
     public int get(int index) {
-        return board[index].getValue();
+        return board[index].getFieldValue();
     }
     
-    public Field getField(int index) {
+    public SudokuField getField(int index) {
         return board[index];
     }
 
     public void set(int x, int y, int value) {
-        int index = (x - 1) + (y - 1) * 9;
-        set(index, value);
+        set(getIndex(x, y), value);
     }
     
     public void set(int index, int value) {
-        board[index] = new Field(index, value);
+        board[index] = new SudokuField(value);
+    }
+    
+    public SudokuRow getRow(int y) {
+        return SudokuRow.createSudokuRow(board, y);
+    }
+    
+    public SudokuColumn getColumn(int x) {
+        return SudokuColumn.createSudokuColumn(board, x);
+    }
+    
+    public SudokuBox getBox(int x, int y) {
+        return SudokuBox.createSudokuBox(board, x, y);
     }
 
+    public int getIndex(int x, int y) {
+        return (x - 1) + (y - 1) * 9;
+    }
+    
     public void draw() {
         for (int i = 0; i < 81; i++) {
             if (i % 9 == 0) {
@@ -53,7 +73,7 @@ public class SudokuBoard {
             if (board[i] == null) {
                 System.out.print(0);
             } else {
-                System.out.print(board[i].getValue() + " ");
+                System.out.print(board[i].getFieldValue() + " ");
             }
             if ((i + 1) % 3 == 0) {
                 System.out.print("| ");
