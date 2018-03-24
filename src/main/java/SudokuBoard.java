@@ -21,11 +21,11 @@ public class SudokuBoard {
         int index = (x - 1) + (y - 1) * 9;
         return get(index);
     }
-    
+
     public int get(int index) {
         return board[index].getValue();
     }
-    
+
     public Field getField(int index) {
         return board[index];
     }
@@ -34,9 +34,14 @@ public class SudokuBoard {
         int index = (x - 1) + (y - 1) * 9;
         set(index, value);
     }
-    
-    public void set(int index, int value) {
-        board[index] = new Field(index, value);
+
+    public boolean set(int index, int value) {
+        if ((value >= 1 && value <= 9) && (index >= 0 && index <= 80)) {
+            board[index] = new Field(index, value);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void draw() {
