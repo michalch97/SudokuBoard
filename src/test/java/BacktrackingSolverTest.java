@@ -9,18 +9,7 @@ public class BacktrackingSolverTest {
         SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
         sudokuSolver.solve(sudokuBoard);
 
-        final int boardSideSize = 9;
-        for (int i = 0 ; i < boardSideSize * boardSideSize; i++) {
-            for (int j = 0 ; j < boardSideSize * boardSideSize; j++) {
-                if (i != j) {
-                    if ((sudokuBoard.getField(i).getXAxis() == sudokuBoard.getField(j).getXAxis()) ||
-                            (sudokuBoard.getField(i).getYAxis() == sudokuBoard.getField(j).getYAxis()) ||
-                            (sudokuBoard.getField(i).getSector() == sudokuBoard.getField(j).getSector())) {
-                        Assert.assertFalse(sudokuBoard.getField(i).getValue() == sudokuBoard.getField(j).getValue());
-                    }
-                }
-            }
-        }
+        Assert.assertTrue(sudokuBoard.checkBoard());
     }
 
     @Test
@@ -33,7 +22,7 @@ public class BacktrackingSolverTest {
         
         int counter = 0;
         for (int i = 0; i < 81; i++) {
-            if (sudokuBoard1.getField(i).getValue() == sudokuBoard2.getField(i).getValue()) {
+            if (sudokuBoard1.getField(i).getFieldValue() == sudokuBoard2.getField(i).getFieldValue()) {
                 counter++;
             }
         }
