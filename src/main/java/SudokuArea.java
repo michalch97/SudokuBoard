@@ -1,3 +1,7 @@
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.List;
 
 public abstract class SudokuArea {
@@ -25,5 +29,38 @@ public abstract class SudokuArea {
 
     public List<SudokuField> getFields() {
         return containedFields;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("AREA_SIZE", AREA_SIZE).
+                append("containedFields", containedFields).
+                toString();
+    }
+
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        SudokuArea rhs = (SudokuArea) obj;
+        return new EqualsBuilder().
+                append(AREA_SIZE, rhs.AREA_SIZE).
+                append(containedFields, rhs.containedFields).
+                isEquals();
+    }
+
+    public int hashCode() {
+        // you pick a hard-coded, randomly chosen, non-zero, odd number
+        // ideally different for each class
+        return new HashCodeBuilder(27, 47).
+                append(AREA_SIZE).
+                append(containedFields).
+                toHashCode();
     }
 }

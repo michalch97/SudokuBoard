@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SudokuBoardTest {
-    private static final List<Integer> CORRECT_SUDOKU_BOARD_VALUES = Arrays.asList( 5, 3, 4, 6, 7, 8, 9, 1, 2,
+    private static final List<Integer> CORRECT_SUDOKU_BOARD_VALUES = Arrays.asList(5, 3, 4, 6, 7, 8, 9, 1, 2,
             6, 7, 2, 1, 9, 5, 3, 4, 8,
             1, 9, 8, 3, 4, 2, 5, 6, 7,
             8, 5, 9, 7, 6, 1, 4, 2, 3,
@@ -38,5 +38,49 @@ public class SudokuBoardTest {
         sudokuBoard.set(1, existingNumber);
 
         Assert.assertFalse(sudokuBoard.checkBoard());
+    }
+
+    @Test
+    public void checkFalseEqualsForSudokuBoard() {
+        SudokuBoard sudokuBoard1 = new SudokuBoard();
+        SudokuBoard sudokuBoard2 = new SudokuBoard();
+        SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
+        sudokuSolver.solve(sudokuBoard1);
+        sudokuSolver.solve(sudokuBoard2);
+
+        Assert.assertNotEquals(sudokuBoard1, sudokuBoard2);
+    }
+
+    @Test
+    public void checkEqualsForSudokuBoard() {
+        SudokuBoard sudokuBoard1 = new SudokuBoard();
+        SudokuBoard sudokuBoard2 = new SudokuBoard();
+        SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
+        sudokuSolver.solve(sudokuBoard1);
+        sudokuBoard2 = sudokuBoard1;
+
+        Assert.assertEquals(sudokuBoard1, sudokuBoard2);
+    }
+
+    @Test
+    public void checkFalseHashcodeForSudokuBoard() {
+        SudokuBoard sudokuBoard1 = new SudokuBoard();
+        SudokuBoard sudokuBoard2 = new SudokuBoard();
+        SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
+        sudokuSolver.solve(sudokuBoard1);
+        sudokuSolver.solve(sudokuBoard2);
+
+        Assert.assertNotEquals(sudokuBoard1.hashCode(), sudokuBoard2.hashCode());
+    }
+
+    @Test
+    public void checkHashcodeForSudokuBoard() {
+        SudokuBoard sudokuBoard1 = new SudokuBoard();
+        SudokuBoard sudokuBoard2 = new SudokuBoard();
+        SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
+        sudokuSolver.solve(sudokuBoard1);
+        sudokuBoard2 = sudokuBoard1;
+
+        Assert.assertEquals(sudokuBoard1.hashCode(), sudokuBoard2.hashCode());
     }
 }

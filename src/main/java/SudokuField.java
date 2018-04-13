@@ -1,3 +1,7 @@
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class SudokuField {
     private int value;
 
@@ -8,8 +12,34 @@ public class SudokuField {
     public int getFieldValue() {
         return value;
     }
-    
-    public void setFieldValue(int value) {
-        this.value = value;
+
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("value", value).
+                toString();
+    }
+
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        SudokuField rhs = (SudokuField) obj;
+        return new EqualsBuilder().
+                append(value, rhs.value).
+                isEquals();
+    }
+
+    public int hashCode() {
+        // you pick a hard-coded, randomly chosen, non-zero, odd number
+        // ideally different for each class
+        return new HashCodeBuilder(47, 67).
+                append(value).
+                toHashCode();
     }
 }
