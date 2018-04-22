@@ -2,11 +2,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class SudokuBoard {
-
+public class SudokuBoard implements Serializable {
+    private static final long serialVersionUID = -3644754526372586835L;
+    
     private List<SudokuField> board = Arrays.asList(new SudokuField[81]);
 
     public boolean checkBoard() {
@@ -119,19 +121,27 @@ public class SudokuBoard {
         if (obj.getClass() != getClass()) {
             return false;
         }
+        
         SudokuBoard rhs = (SudokuBoard) obj;
-        return new EqualsBuilder().
-                appendSuper(super.equals(obj)).
-                append(board, rhs.board).
-                isEquals();
+        EqualsBuilder builder = new EqualsBuilder();
+        
+        for (int i = 0; i < board.size(); i++) {
+            builder.append(board.get(i), rhs.board.get(i));
+        }
+        
+        return builder.isEquals();
     }
 
     public int hashCode() {
         // you pick a hard-coded, randomly chosen, non-zero, odd number
         // ideally different for each class
-        return new HashCodeBuilder(37, 57).
-                append(board).
-                toHashCode();
+        HashCodeBuilder hashBuilder = new HashCodeBuilder(37, 57);
+        
+        for (int i = 0; i < board.size(); i++) {
+            hashBuilder.append(board.get(i));
+        }
+        
+        return hashBuilder.toHashCode();
     }
 
 }

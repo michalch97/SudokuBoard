@@ -1,8 +1,12 @@
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SudokuField {
+public class SudokuField implements Serializable {
+    private static final long serialVersionUID = 2381974911264841282L;
+    
     private int value;
 
     public SudokuField(int value) {
