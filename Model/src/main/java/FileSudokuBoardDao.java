@@ -11,7 +11,7 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
     
-    public FileSudokuBoardDao(String fileName) throws IOException {
+    public FileSudokuBoardDao(final String fileName) throws IOException {
         serializationFile = new File(fileName);
         serializationFile.createNewFile();
     }
@@ -29,7 +29,7 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
                 objectInputStream = new ObjectInputStream(fileInputStream);
             }
 
-            sudokuBoard = (SudokuBoard)objectInputStream.readObject();
+            sudokuBoard = (SudokuBoard) objectInputStream.readObject();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -40,7 +40,7 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     }
 
     @Override
-    public void write(SudokuBoard obj) {
+    public void write(final SudokuBoard obj) {
         try {
             if (objectInputStream != null) {
                 objectInputStream.close();
