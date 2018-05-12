@@ -3,28 +3,31 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 public class SudokuBoard implements Serializable, Cloneable {
     private static final long serialVersionUID = -3644754526372586835L;
-    
+    private Random random = new Random();
     private List<SudokuField> board = Arrays.asList(new SudokuField[81]);
 
     public SudokuBoard() {
-        
+
     }
-    
+
     public SudokuBoard(final List<SudokuField> board) {
         if (board.size() != 81) {
             throw new IllegalArgumentException("Passed list of wrong size");
         }
-        
+
         SudokuField[] array = new SudokuField[81];
         board.toArray(array);
         this.board = Arrays.asList(array);
     }
-    
+
     public boolean checkBoard() {
         final int BOARD_SIDE_LENGTH = 9;
         final int SECTOR_SIDE_LENGTH = 3;
@@ -95,6 +98,8 @@ public class SudokuBoard implements Serializable, Cloneable {
             }
             if (board.get(i) == null) {
                 System.out.print(0);
+            } else if (board.get(i).getFieldValue() == 0) {
+                System.out.print("  ");
             } else {
                 System.out.print(board.get(i).getFieldValue() + " ");
             }
@@ -135,14 +140,14 @@ public class SudokuBoard implements Serializable, Cloneable {
         if (obj.getClass() != getClass()) {
             return false;
         }
-        
+
         SudokuBoard rhs = (SudokuBoard) obj;
         EqualsBuilder builder = new EqualsBuilder();
-        
+
         for (int i = 0; i < board.size(); i++) {
             builder.append(board.get(i), rhs.board.get(i));
         }
-        
+
         return builder.isEquals();
     }
 
@@ -150,16 +155,35 @@ public class SudokuBoard implements Serializable, Cloneable {
         // you pick a hard-coded, randomly chosen, non-zero, odd number
         // ideally different for each class
         HashCodeBuilder hashBuilder = new HashCodeBuilder(37, 57);
-        
+
         for (int i = 0; i < board.size(); i++) {
             hashBuilder.append(board.get(i));
         }
-        
+
         return hashBuilder.toHashCode();
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        SudokuBoard sudoku = new SudokuBoard(this.board);
+    public SudokuBoard clone() throws CloneNotSupportedException {
+        SudokuBoard sudoku = new SudokuBoard();
+        for (int i = 0; i < 81; i++) {
+            sudoku.set(i, board.get(i).getFieldValue());
+        }
         return sudoku;
+    }
+
+    public void prepareBoardToGame(final DifficultyLevel chosenDifficulty) {
+        int fieldsToDelete = (chosenDifficulty.getValue() + 1) * 10;
+        int[] indexesToDelete = new int[fieldsToDelete];
+        int i = 0;
+        while (i < fieldsToDelete) {
+            final int index = random.nextInt(80);
+            if (!IntStream.of(indexesToDelete).anyMatch(x -> x == index)) {
+                indexesToDelete[i] = index;
+                i++;
+            }
+        }
+        for (int j = 0; j < fieldsToDelete; j++) {
+            board.get(indexesToDelete[j]).clear();
+        }
     }
 }

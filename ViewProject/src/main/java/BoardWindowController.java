@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -16,9 +17,9 @@ public class BoardWindowController implements Initializable {
     private GridPane boardGridPane;
     @FXML
     private Button checkBoardButton;
-    
+    private BoardWindow boardWindow;
     private List<TextField> textFields = new ArrayList<TextField>();
-    
+
     @FXML
     public void initialize() {
         for (int i = 0; i < 9; i++) {
@@ -31,15 +32,32 @@ public class BoardWindowController implements Initializable {
             }
         }
     }
-    
+
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         initialize();
     }
-    
-    public void setSudokuBoard(SudokuBoard board) {
+
+    public void setSudokuBoard(final SudokuBoard board) {
         for (int i = 0; i < 81; i++) {
-                textFields.get(i).setText(Integer.toString(board.get(i)));
+            String field = Integer.toString(board.get(i));
+            if (!field.equals("0")) {
+                textFields.get(i).setEditable(false);
+            }
+            textFields.get(i).setText(field.equals("0") ? "" : field);
         }
+    }
+
+    @FXML
+    public void onCheckButtonAction() {
+        List<Integer> fields = new ArrayList<>();
+        for (int i = 0; i < 81; i++) {
+            fields.add(i, Integer.parseInt(textFields.get(i).getText().equals(" ") ? "0" : textFields.get(i).getText()));
+        }
+        boardWindow.checkTheCorrectness(fields);
+    }
+
+    public void setBoardWindows(final BoardWindow boardWindow) {
+        this.boardWindow = boardWindow;
     }
 }

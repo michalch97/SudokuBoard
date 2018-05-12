@@ -1,9 +1,11 @@
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -37,6 +39,10 @@ public class BoardWindow {
     }
     
     private void initBoardWindowEvents() {
-        
+        boardWindowController.setBoardWindows(this);
+    }
+
+    public void checkTheCorrectness(final List<Integer> fields) {
+        parent.checkTheCorrectness(fields);
     }
 }
