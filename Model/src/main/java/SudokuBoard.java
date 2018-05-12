@@ -6,11 +6,25 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class SudokuBoard implements Serializable {
+public class SudokuBoard implements Serializable, Cloneable {
     private static final long serialVersionUID = -3644754526372586835L;
     
     private List<SudokuField> board = Arrays.asList(new SudokuField[81]);
 
+    public SudokuBoard() {
+        
+    }
+    
+    public SudokuBoard(List<SudokuField> board) {
+        if (board.size() != 81) {
+            throw new IllegalArgumentException("Passed list of wrong size");
+        }
+        
+        SudokuField[] array = new SudokuField[81];
+        board.toArray(array);
+        this.board = Arrays.asList(array);
+    }
+    
     public boolean checkBoard() {
         final int BOARD_SIDE_LENGTH = 9;
         final int SECTOR_SIDE_LENGTH = 3;
@@ -144,4 +158,8 @@ public class SudokuBoard implements Serializable {
         return hashBuilder.toHashCode();
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        SudokuBoard sudoku = new SudokuBoard(this.board);
+        return sudoku;
+    }
 }

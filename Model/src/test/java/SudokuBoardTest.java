@@ -83,4 +83,29 @@ public class SudokuBoardTest {
 
         Assert.assertEquals(sudokuBoard1.hashCode(), sudokuBoard2.hashCode());
     }
+    
+    @Test
+    public void checkCloneForSudokuBoard() {
+        SudokuBoard sudokuBoard1 = new SudokuBoard();
+        SudokuBoard sudokuBoard2 = null;
+        SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
+        sudokuSolver.solve(sudokuBoard1);
+
+        try {
+            sudokuBoard2 = (SudokuBoard) sudokuBoard1.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(sudokuBoard2);
+        Assert.assertEquals(sudokuBoard1, sudokuBoard2);
+        Assert.assertNotSame(sudokuBoard1, sudokuBoard2);
+        
+        if (sudokuBoard2.get(0) != 5) {
+            sudokuBoard2.set(0, 5);
+        } else {
+            sudokuBoard2.set(0, 6);
+        }
+        Assert.assertNotEquals(sudokuBoard1, sudokuBoard2);
+    }
 }
