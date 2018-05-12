@@ -52,7 +52,7 @@ public class SudokuField implements Serializable, Cloneable, Comparable<SudokuFi
     }
 
     @Override
-    public int compareTo(SudokuField other) {
+    public int compareTo(final SudokuField other) {
         return Integer.compare(this.value, other.value);
     }
 }

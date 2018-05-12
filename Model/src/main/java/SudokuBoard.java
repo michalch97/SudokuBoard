@@ -15,7 +15,7 @@ public class SudokuBoard implements Serializable, Cloneable {
         
     }
     
-    public SudokuBoard(List<SudokuField> board) {
+    public SudokuBoard(final List<SudokuField> board) {
         if (board.size() != 81) {
             throw new IllegalArgumentException("Passed list of wrong size");
         }
