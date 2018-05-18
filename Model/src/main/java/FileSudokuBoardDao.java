@@ -8,11 +8,15 @@ import java.io.ObjectOutputStream;
 public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     File serializationFile;
     
-    ObjectOutputStream objectOutputStream;
-    ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
+    private ObjectInputStream objectInputStream;
     
     public FileSudokuBoardDao(final String fileName) throws IOException {
-        serializationFile = new File(fileName);
+        this(new File(fileName));
+    }
+    
+    public FileSudokuBoardDao(final File file) throws IOException {
+        serializationFile = file;
         serializationFile.createNewFile();
     }
     
@@ -21,15 +25,11 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
         SudokuBoard sudokuBoard = null;
         
         try {
-            if (objectOutputStream != null) {
-                objectOutputStream.close();
-            }
-            if (objectInputStream == null) {
-                FileInputStream fileInputStream = new FileInputStream(serializationFile);
-                objectInputStream = new ObjectInputStream(fileInputStream);
-            }
+            FileInputStream fileInputStream = new FileInputStream(serializationFile);
+            objectInputStream = new ObjectInputStream(fileInputStream);
 
             sudokuBoard = (SudokuBoard) objectInputStream.readObject();
+            objectInputStream.close();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -42,15 +42,11 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     @Override
     public void write(final SudokuBoard obj) {
         try {
-            if (objectInputStream != null) {
-                objectInputStream.close();
-            }
-            if (objectOutputStream == null) {
-                FileOutputStream fileOutputStream = new FileOutputStream(serializationFile);
-                objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            }
+            FileOutputStream fileOutputStream = new FileOutputStream(serializationFile);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
             
             objectOutputStream.writeObject(obj);
+            objectOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

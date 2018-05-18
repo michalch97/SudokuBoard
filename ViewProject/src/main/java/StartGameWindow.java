@@ -49,12 +49,9 @@ public class StartGameWindow extends Application {
 
         sudokuSolver.solve(sudokuBoard);
         try {
-            SudokuBoard boardToSolve = sudokuBoard.clone();
-            boardToSolve.prepareBoardToGame(chosenDifficulty);
+            sudokuBoard.prepareBoardToGame(chosenDifficulty);
             sudokuBoard.draw();
-            BoardWindow window = new BoardWindow(this, boardToSolve);
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+            BoardWindow window = new BoardWindow(this, sudokuBoard);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,15 +59,5 @@ public class StartGameWindow extends Application {
 
     private void initStartGameWindowEvents() {
         startGameController.setOnStartButtonClickedEvent(this);
-    }
-
-    public void checkTheCorrectness(final List<Integer> fields) {
-        List<SudokuField> board = Arrays.asList(new SudokuField[81]);
-        for (int i = 0; i < board.size(); i++) {
-            board.set(i, new SudokuField(fields.get(i)));
-        }
-        SudokuBoard boardAfterGame = new SudokuBoard(board);
-        String teqxt = sudokuBoard.equals(boardAfterGame) ? "GOOD!" : "BAD!";
-        System.out.println(teqxt);
     }
 }

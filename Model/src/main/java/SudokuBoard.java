@@ -54,7 +54,11 @@ public class SudokuBoard implements Serializable, Cloneable {
     }
 
     public int get(int index) {
-        return board.get(index).getFieldValue();
+        if (board.get(index) != null) {
+            return board.get(index).getFieldValue();
+        } else {
+            return 0;
+        }
     }
 
     public SudokuField getField(int index) {
@@ -67,6 +71,10 @@ public class SudokuBoard implements Serializable, Cloneable {
 
     public void set(int index, int value) {
         board.set(index, new SudokuField(value));
+    }
+    
+    public void set(int index, int value, boolean isUserValue) {
+        board.set(index, new SudokuField(value, isUserValue));
     }
 
     public SudokuRow getRow(int y) {
@@ -97,8 +105,6 @@ public class SudokuBoard implements Serializable, Cloneable {
                 }
             }
             if (board.get(i) == null) {
-                System.out.print(0);
-            } else if (board.get(i).getFieldValue() == 0) {
                 System.out.print("  ");
             } else {
                 System.out.print(board.get(i).getFieldValue() + " ");
@@ -183,7 +189,7 @@ public class SudokuBoard implements Serializable, Cloneable {
             }
         }
         for (int j = 0; j < fieldsToDelete; j++) {
-            board.get(indexesToDelete[j]).clear();
+            board.set(indexesToDelete[j], null);
         }
     }
 }

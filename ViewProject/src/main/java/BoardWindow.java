@@ -26,7 +26,6 @@ public class BoardWindow {
         
         boardWindowController = loader.getController();
         boardWindowController.setSudokuBoard(board);
-        initBoardWindowEvents();
         
         boardStage = new Stage();
         boardStage.setTitle("Plansza sudoku");
@@ -36,13 +35,12 @@ public class BoardWindow {
         boardStage.setMinWidth(330);
         boardStage.setMinHeight(430);
         boardStage.show();
+        
+        initBoardWindowEvents();
     }
     
     private void initBoardWindowEvents() {
-        boardWindowController.setBoardWindows(this);
-    }
-
-    public void checkTheCorrectness(final List<Integer> fields) {
-        parent.checkTheCorrectness(fields);
+        boardWindowController.setParent(this);
+        boardWindowController.setGuiParent(boardStage);
     }
 }

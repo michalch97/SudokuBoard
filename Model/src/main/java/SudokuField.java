@@ -8,22 +8,29 @@ public class SudokuField implements Serializable, Cloneable, Comparable<SudokuFi
     private static final long serialVersionUID = 2381974911264841282L;
 
     private int value;
+    private boolean isUserProvidedField;
 
     public SudokuField(int value) {
+        this(value, false);
+    }
+    
+    public SudokuField(int value, boolean isUserProvidedField) {
         this.value = value;
+        this.isUserProvidedField = isUserProvidedField;
     }
 
     public int getFieldValue() {
         return value;
     }
 
-    public void clear() {
-        this.value = 0;
+    public boolean getIsUserProvidedField() {
+        return isUserProvidedField;
     }
 
     public String toString() {
         return new ToStringBuilder(this).
                 append("value", value).
+                append("isUserValue", isUserProvidedField).
                 toString();
     }
 
@@ -40,6 +47,7 @@ public class SudokuField implements Serializable, Cloneable, Comparable<SudokuFi
         SudokuField rhs = (SudokuField) obj;
         return new EqualsBuilder().
                 append(value, rhs.value).
+                append(isUserProvidedField, rhs.isUserProvidedField).
                 isEquals();
     }
 
@@ -48,6 +56,7 @@ public class SudokuField implements Serializable, Cloneable, Comparable<SudokuFi
         // ideally different for each class
         return new HashCodeBuilder(47, 67).
                 append(value).
+                append(isUserProvidedField).
                 toHashCode();
     }
 
