@@ -1,22 +1,15 @@
 
-import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -26,6 +19,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class BoardWindowController implements Initializable {
+    private static final String textFieldErrorCss = "TextFieldError.css";
+    
     @FXML
     private GridPane boardGridPane;
     @FXML
@@ -87,12 +82,19 @@ public class BoardWindowController implements Initializable {
         }
     }
     
-    public void setParent(BoardWindow parent) {
+    public void setParent(final BoardWindow parent) {
         boardWindow = parent;
     }
     
-    public void setGuiParent(Stage parent) {
+    public void setGuiParent(final Stage parent) {
         guiParent = parent;
+        
+        if (parent == null) {
+            return;
+        }
+        String errorCss = getClass().getClassLoader().getResource(textFieldErrorCss).toString();
+        Scene scene = guiParent.getScene();
+        scene.getStylesheets().add(errorCss);
     }
 
     @FXML
@@ -141,17 +143,26 @@ public class BoardWindowController implements Initializable {
     }
     
     private void checkTheCorrectness() {
-        String teqxt = currentSudokuBoard.checkBoard() ? "GOOD!" : "BAD!";
-        System.out.println(teqxt);
+        final String errorCssClass = "textFieldError";
         
-        // TODO highlighting wrong fields
+        for (TextField field : textFields) {
+            field.getStyleClass().remove(errorCssClass);
+        }
+        
+        if (!currentSudokuBoard.checkBoard()) {
+            Set<Integer> errorIndexes = currentSudokuBoard.getIndexesOfUserIncorrectAnswers();
+            for (int index : errorIndexes) {
+                textFields.get(index).getStyleClass().add(errorCssClass);
+            }
+        }
     }
     
-    private TextFormatter<String> createFormater(TextField textField, int boardIndex) {
+    private TextFormatter<String> createFormater(final TextField textField, int boardIndex) {
         TextFormatter<String> formatter = new TextFormatter<String>((Change change) -> {
             String newText = change.getControlNewText();
             if (newText.isEmpty()) {
                 currentSudokuBoard.setNull(boardIndex);
+                checkTheCorrectness();
                 return change;
             }
             
@@ -161,6 +172,7 @@ public class BoardWindowController implements Initializable {
                 return null;
             } else {
                 currentSudokuBoard.set(boardIndex, Integer.parseInt(newText), !textField.isDisabled());
+                checkTheCorrectness();
                 return change;
             }
         });

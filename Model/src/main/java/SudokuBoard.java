@@ -3,10 +3,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 public class SudokuBoard implements Serializable, Cloneable {
@@ -59,6 +60,10 @@ public class SudokuBoard implements Serializable, Cloneable {
         } else {
             return 0;
         }
+    }
+    
+    public SudokuField getField(int x, int y) {
+        return getField(getIndex(x, y));
     }
 
     public SudokuField getField(int index) {
@@ -191,5 +196,48 @@ public class SudokuBoard implements Serializable, Cloneable {
         for (int j = 0; j < fieldsToDelete; j++) {
             board.set(indexesToDelete[j], null);
         }
+    }
+    
+    public Set<Integer> getIndexesOfUserIncorrectAnswers() {
+        Set<Integer> indexes = new HashSet<Integer>();
+        
+        final int BOARD_SIDE_LENGTH = 9;
+        final int SECTOR_SIDE_LENGTH = 3;
+
+        for (int i = 1; i <= BOARD_SIDE_LENGTH; i++) {
+            if (!getRow(i).verify()) {
+                for (int j = 1; j <= BOARD_SIDE_LENGTH; j++) {
+                    SudokuField field = getField(j, i);
+                    if (field != null && field.getIsUserProvidedField()) {
+                        indexes.add(getIndex(j, i));
+                    }
+                }
+            }
+            if (!getColumn(i).verify()) {
+                for (int j = 1; j <= BOARD_SIDE_LENGTH; j++) {
+                    SudokuField field = getField(i, j);
+                    if (field != null && field.getIsUserProvidedField()) {
+                        indexes.add(getIndex(i, j));
+                    }
+                }
+            }
+        }
+
+        for (int i = 1; i <= SECTOR_SIDE_LENGTH; i++) {
+            for (int j = 1; j <= SECTOR_SIDE_LENGTH; j++) {
+                if (!getBox(i * SECTOR_SIDE_LENGTH, j * SECTOR_SIDE_LENGTH).verify()) {
+                    
+                    for (int m = i * SECTOR_SIDE_LENGTH; m > i * SECTOR_SIDE_LENGTH - SECTOR_SIDE_LENGTH; m--) {
+                        for (int n = j * SECTOR_SIDE_LENGTH; n > j * SECTOR_SIDE_LENGTH - SECTOR_SIDE_LENGTH; n--) {
+                            if (getField(m, n) != null && getField(m, n).getIsUserProvidedField()) {
+                                indexes.add(getIndex(m, n));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return indexes;
     }
 }

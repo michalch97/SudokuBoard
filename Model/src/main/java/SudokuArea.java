@@ -50,7 +50,6 @@ public abstract class SudokuArea {
         }
         SudokuArea rhs = (SudokuArea) obj;
         return new EqualsBuilder().
-                append(AREA_SIZE, rhs.AREA_SIZE).
                 append(containedFields, rhs.containedFields).
                 isEquals();
     }
@@ -59,7 +58,6 @@ public abstract class SudokuArea {
         // you pick a hard-coded, randomly chosen, non-zero, odd number
         // ideally different for each class
         return new HashCodeBuilder(27, 47).
-                append(AREA_SIZE).
                 append(containedFields).
                 toHashCode();
     }
