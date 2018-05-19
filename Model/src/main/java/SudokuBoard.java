@@ -49,6 +49,16 @@ public class SudokuBoard implements Serializable, Cloneable {
 
         return true;
     }
+    
+    public boolean checkIfContainsEmptyFields() {
+        for (SudokuField field : board) {
+            if (field == null) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     public int get(int x, int y) {
         return get(getIndex(x, y));

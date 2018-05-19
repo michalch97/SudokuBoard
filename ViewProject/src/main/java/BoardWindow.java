@@ -29,8 +29,8 @@ public class BoardWindow {
         boardStage.setScene(scene);
         boardStage.initOwner(parent.getStage());
         boardStage.initModality(Modality.APPLICATION_MODAL);
-        boardStage.setMinWidth(330);
-        boardStage.setMinHeight(430);
+        boardStage.setMinWidth(335);
+        boardStage.setMinHeight(395);
         boardStage.show();
         
         initBoardWindowEvents();

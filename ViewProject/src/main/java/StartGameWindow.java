@@ -30,7 +30,7 @@ public class StartGameWindow extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Sudoku");
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(420);
+        primaryStage.setMinWidth(220);
         primaryStage.setMinHeight(100);
         primaryStage.show();
     }

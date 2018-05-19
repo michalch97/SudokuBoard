@@ -10,16 +10,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class BoardWindowController implements Initializable {
     private static final String textFieldErrorCss = "TextFieldError.css";
+    private static final String winIconName = "medal.png";
     
     @FXML
     private GridPane boardGridPane;
@@ -33,18 +39,29 @@ public class BoardWindowController implements Initializable {
     private BoardWindow boardWindow;
     private Stage guiParent;
     private List<TextField> textFields = new ArrayList<TextField>();
+    private List<GridPane> boxesOfFields = new ArrayList<GridPane>();
     private SudokuBoard currentSudokuBoard; 
 
     @FXML
     public void initialize() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                GridPane boxGrid = new GridPane();
+                boxGrid.setGridLinesVisible(true);
+                
+                boardGridPane.add(boxGrid, i, j);
+                boxesOfFields.add(boxGrid);
+            }
+        }
+        
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 TextField field = new TextField();
                 field.setTextFormatter(createFormater(field, textFields.size()));
                 field.setAlignment(Pos.CENTER);
-                //field.setPrefSize(20, 20);
+                field.setPrefSize(40, 40);
                 
-                boardGridPane.add(field, j, i);
+                boxesOfFields.get((i / 3) * 3 + j / 3).add(field, (i % 3) * 3, j % 3);
                 textFields.add(field);
             }
         }
@@ -70,13 +87,13 @@ public class BoardWindowController implements Initializable {
             
             if (field != null) {
                 if (field.getIsUserProvidedField()) {
-                    textFields.get(i).setDisable(false);
+                    setFieldDisabled(textFields.get(i), false);
                 } else {
-                    textFields.get(i).setDisable(true);
+                    setFieldDisabled(textFields.get(i), true);
                 }
                 textFields.get(i).setText(Integer.toString(field.getFieldValue()));
             } else {
-                textFields.get(i).setDisable(false);
+                setFieldDisabled(textFields.get(i), false);
                 textFields.get(i).clear();
             }
         }
@@ -99,7 +116,28 @@ public class BoardWindowController implements Initializable {
 
     @FXML
     public void onCheckButtonAction() {
-        checkTheCorrectness();
+        if (currentSudokuBoard.checkBoard() && !currentSudokuBoard.checkIfContainsEmptyFields()) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Koniec gry");
+            alert.setHeaderText("Brawo!");
+            alert.setContentText("Udało ci się rozwiązać sudoku!");
+            
+            Image winIcon = new Image(this.getClass().getResource(winIconName).toString());
+            ImageView imageView = new ImageView(winIcon);
+            alert.setGraphic(imageView);
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(winIcon);
+            
+            alert.showAndWait();
+            Stage currentStage = (Stage) boardGridPane.getScene().getWindow();
+            currentStage.close();
+        } else {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Niepoprawne rozwiązanie");
+            alert.setHeaderText("To jeszcze nie koniec gry!");
+            alert.setContentText("Plansza nie jest jeszcze poprawnie rozwiązana.");
+            alert.showAndWait();
+        }
     }
     
     @FXML
@@ -178,5 +216,15 @@ public class BoardWindowController implements Initializable {
         });
         
         return formatter;
+    }
+    
+    private void setFieldDisabled(TextField field, boolean disabled) {
+        if (disabled) {
+            field.setDisable(true);
+            field.setStyle("-fx-opacity: 1.0; -fx-background-color: rgba(230,230,230,0.5);");
+        } else {
+            field.setDisable(false);
+            field.setStyle("-fx-opacity: 1.0; -fx-background-color: rgba(255,255,255,0.7);");
+        }
     }
 }
