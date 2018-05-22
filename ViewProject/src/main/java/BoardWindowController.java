@@ -61,7 +61,7 @@ public class BoardWindowController implements Initializable {
                 field.setAlignment(Pos.CENTER);
                 field.setPrefSize(40, 40);
                 
-                boxesOfFields.get((i / 3) * 3 + j / 3).add(field, (i % 3) * 3, j % 3);
+                boxesOfFields.get((j / 3) * 3 + i / 3).add(field, (j % 3) * 3, i % 3);
                 textFields.add(field);
             }
         }
@@ -75,9 +75,6 @@ public class BoardWindowController implements Initializable {
     public void setSudokuBoard(final SudokuBoard board) {
         if (board == null) {
             return;
-        }
-        if (!board.checkBoard()) {
-            throw new RuntimeException("New board is incorrect");
         }
         
         currentSudokuBoard = board;
@@ -218,13 +215,16 @@ public class BoardWindowController implements Initializable {
         return formatter;
     }
     
-    private void setFieldDisabled(TextField field, boolean disabled) {
+    private void setFieldDisabled(final TextField field, boolean disabled) {
         if (disabled) {
             field.setDisable(true);
             field.setStyle("-fx-opacity: 1.0; -fx-background-color: rgba(230,230,230,0.5);");
         } else {
             field.setDisable(false);
-            field.setStyle("-fx-opacity: 1.0; -fx-background-color: rgba(255,255,255,0.7);");
+            field.getStyleClass().clear();
+            field.setStyle(null);
+            field.getStyleClass().add("text-field"); 
+            field.getStyleClass().add("text-input");
         }
     }
 }
