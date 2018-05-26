@@ -7,23 +7,23 @@ import java.io.ObjectOutputStream;
 
 public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     File serializationFile;
-    
+
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    
+
     public FileSudokuBoardDao(final String fileName) throws IOException {
         this(new File(fileName));
     }
-    
+
     public FileSudokuBoardDao(final File file) throws IOException {
         serializationFile = file;
         serializationFile.createNewFile();
     }
-    
+
     @Override
-    public SudokuBoard read() {
+    public SudokuBoard read() throws Throwable {
         SudokuBoard sudokuBoard = null;
-        
+
         try {
             FileInputStream fileInputStream = new FileInputStream(serializationFile);
             objectInputStream = new ObjectInputStream(fileInputStream);
@@ -31,24 +31,30 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
             sudokuBoard = (SudokuBoard) objectInputStream.readObject();
             objectInputStream.close();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Throwable te = new SudokuException("Deserialization error: class not found");
+            te.initCause(e);
+            throw te;
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwable te = new SudokuException("Deserialization error: input/output error");
+            te.initCause(e);
+            throw te;
         }
-        
+
         return sudokuBoard;
     }
 
     @Override
-    public void write(final SudokuBoard obj) {
+    public void write(final SudokuBoard obj) throws Throwable {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(serializationFile);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            
+
             objectOutputStream.writeObject(obj);
             objectOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwable te = new SudokuException("Serialization error: input/output error");
+            te.initCause(e);
+            throw te;
         }
     }
 
@@ -57,7 +63,7 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
         if (objectOutputStream != null) {
             objectOutputStream.close();
         }
-        
+
         if (objectInputStream != null) {
             objectInputStream.close();
         }

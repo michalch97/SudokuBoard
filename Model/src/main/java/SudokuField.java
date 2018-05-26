@@ -13,7 +13,7 @@ public class SudokuField implements Serializable, Cloneable, Comparable<SudokuFi
     public SudokuField(int value) {
         this(value, false);
     }
-    
+
     public SudokuField(int value, boolean isUserProvidedField) {
         this.value = value;
         this.isUserProvidedField = isUserProvidedField;

@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.URL;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -39,7 +40,7 @@ public class StartGameWindow extends Application {
         return primaryStage;
     }
 
-    public void startNewGame(final DifficultyLevel chosenDifficulty) {
+    public void startNewGame(final DifficultyLevel chosenDifficulty) throws Throwable {
         sudokuBoard = new SudokuBoard();
         SudokuSolver sudokuSolver = new BacktrackingSudokuSolver();
 
@@ -49,7 +50,9 @@ public class StartGameWindow extends Application {
             sudokuBoard.draw();
             BoardWindow window = new BoardWindow(this, sudokuBoard);
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwable te = new SudokuException("Start new game error");
+            te.initCause(e);
+            throw te;
         }
     }
 

@@ -1,6 +1,8 @@
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -14,14 +16,15 @@ public class SudokuBoard implements Serializable, Cloneable {
     private static final long serialVersionUID = -3644754526372586835L;
     private Random random = new Random();
     private List<SudokuField> board = Arrays.asList(new SudokuField[81]);
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     public SudokuBoard() {
 
     }
 
-    public SudokuBoard(final List<SudokuField> board) {
+    public SudokuBoard(final List<SudokuField> board) throws SudokuException {
         if (board.size() != 81) {
-            throw new IllegalArgumentException("Passed list of wrong size");
+            throw new SudokuException("Passed list of wrong size");
         }
 
         SudokuField[] array = new SudokuField[81];
@@ -49,14 +52,14 @@ public class SudokuBoard implements Serializable, Cloneable {
 
         return true;
     }
-    
+
     public boolean checkIfContainsEmptyFields() {
         for (SudokuField field : board) {
             if (field == null) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -71,7 +74,7 @@ public class SudokuBoard implements Serializable, Cloneable {
             return 0;
         }
     }
-    
+
     public SudokuField getField(int x, int y) {
         return getField(getIndex(x, y));
     }
@@ -87,7 +90,7 @@ public class SudokuBoard implements Serializable, Cloneable {
     public void set(int index, int value) {
         board.set(index, new SudokuField(value));
     }
-    
+
     public void set(int index, int value, boolean isUserValue) {
         board.set(index, new SudokuField(value, isUserValue));
     }
@@ -109,27 +112,29 @@ public class SudokuBoard implements Serializable, Cloneable {
     }
 
     public void draw() {
+        String line = "";
         for (int i = 0; i < 81; i++) {
             if (i % 9 == 0) {
-                System.out.println();
+                log.info(line + "\n");
+                line = "";
                 if (i % 27 == 0) {
-                    System.out.println("-------------------------");
-                    System.out.print("| ");
+                    log.info("-------------------------\n");
+                    line += "| ";
                 } else {
-                    System.out.print("| ");
+                    line += "| ";
                 }
             }
             if (board.get(i) == null) {
-                System.out.print("  ");
+                line += "  ";
             } else {
-                System.out.print(board.get(i).getFieldValue() + " ");
+                line += (board.get(i).getFieldValue() + " ");
             }
             if ((i + 1) % 3 == 0) {
-                System.out.print("| ");
+                line += "| ";
             }
         }
-        System.out.println();
-        System.out.println("-------------------------");
+        log.info(line + "\n");
+        log.info("-------------------------\n");
     }
 
     public void setNull(int i) {
@@ -207,10 +212,10 @@ public class SudokuBoard implements Serializable, Cloneable {
             board.set(indexesToDelete[j], null);
         }
     }
-    
+
     public Set<Integer> getIndexesOfUserIncorrectAnswers() {
         Set<Integer> indexes = new HashSet<Integer>();
-        
+
         final int BOARD_SIDE_LENGTH = 9;
         final int SECTOR_SIDE_LENGTH = 3;
 
@@ -236,7 +241,7 @@ public class SudokuBoard implements Serializable, Cloneable {
         for (int i = 1; i <= SECTOR_SIDE_LENGTH; i++) {
             for (int j = 1; j <= SECTOR_SIDE_LENGTH; j++) {
                 if (!getBox(i * SECTOR_SIDE_LENGTH, j * SECTOR_SIDE_LENGTH).verify()) {
-                    
+
                     for (int m = i * SECTOR_SIDE_LENGTH; m > i * SECTOR_SIDE_LENGTH - SECTOR_SIDE_LENGTH; m--) {
                         for (int n = j * SECTOR_SIDE_LENGTH; n > j * SECTOR_SIDE_LENGTH - SECTOR_SIDE_LENGTH; n--) {
                             if (getField(m, n) != null && getField(m, n).getIsUserProvidedField()) {
@@ -247,7 +252,7 @@ public class SudokuBoard implements Serializable, Cloneable {
                 }
             }
         }
-        
+
         return indexes;
     }
 }

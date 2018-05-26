@@ -1,5 +1,6 @@
 
 public interface Dao<T> {
-    T read();
-    void write(T obj);
+    T read() throws Throwable;
+
+    void write(T obj) throws Throwable;
 }
