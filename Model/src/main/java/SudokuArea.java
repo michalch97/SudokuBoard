@@ -18,6 +18,9 @@ public abstract class SudokuArea {
                 if (containedFields.get(i) == null || containedFields.get(j) == null) {
                     continue;
                 }
+                if (!containedFields.get(i).isValid() || !containedFields.get(j).isValid()) {
+                    continue;
+                }
 
                 if (i != j && containedFields.get(i).getFieldValue() == containedFields.get(j).getFieldValue()) {
                     return false;

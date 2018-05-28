@@ -223,7 +223,7 @@ public class SudokuBoard implements Serializable, Cloneable {
             if (!getRow(i).verify()) {
                 for (int j = 1; j <= BOARD_SIDE_LENGTH; j++) {
                     SudokuField field = getField(j, i);
-                    if (field != null && field.getIsUserProvidedField()) {
+                    if (field != null && field.getIsUserProvidedField() && field.isValid()) {
                         indexes.add(getIndex(j, i));
                     }
                 }
@@ -231,7 +231,7 @@ public class SudokuBoard implements Serializable, Cloneable {
             if (!getColumn(i).verify()) {
                 for (int j = 1; j <= BOARD_SIDE_LENGTH; j++) {
                     SudokuField field = getField(i, j);
-                    if (field != null && field.getIsUserProvidedField()) {
+                    if (field != null && field.getIsUserProvidedField() && field.isValid()) {
                         indexes.add(getIndex(i, j));
                     }
                 }
@@ -244,7 +244,7 @@ public class SudokuBoard implements Serializable, Cloneable {
 
                     for (int m = i * SECTOR_SIDE_LENGTH; m > i * SECTOR_SIDE_LENGTH - SECTOR_SIDE_LENGTH; m--) {
                         for (int n = j * SECTOR_SIDE_LENGTH; n > j * SECTOR_SIDE_LENGTH - SECTOR_SIDE_LENGTH; n--) {
-                            if (getField(m, n) != null && getField(m, n).getIsUserProvidedField()) {
+                            if (getField(m, n) != null && getField(m, n).getIsUserProvidedField() && getField(m, n).isValid()) {
                                 indexes.add(getIndex(m, n));
                             }
                         }

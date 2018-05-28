@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -22,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class BoardWindowController implements Initializable {
     private static final String textFieldErrorCss = "TextFieldError.css";
@@ -78,7 +80,26 @@ public class BoardWindowController implements Initializable {
         }
 
         currentSudokuBoard = board;
+        StringConverter<Number> stringConverter = new StringConverter<Number>() {
+            @Override
+            public Number fromString(String arg0) {
+                if (arg0.isEmpty()) {
+                    return 0;
+                } else {
+                    return Integer.parseInt(arg0);
+                }
+            }
 
+            @Override
+            public String toString(Number arg0) {
+                if (arg0.intValue() == 0) {
+                    return "";
+                } else {
+                    return arg0.toString();
+                }
+            }
+        };
+        
         for (int i = 0; i < 81; i++) {
             SudokuField field = currentSudokuBoard.getField(i);
 
@@ -88,11 +109,17 @@ public class BoardWindowController implements Initializable {
                 } else {
                     setFieldDisabled(textFields.get(i), true);
                 }
-                textFields.get(i).setText(Integer.toString(field.getFieldValue()));
             } else {
                 setFieldDisabled(textFields.get(i), false);
-                textFields.get(i).clear();
+                currentSudokuBoard.set(i, 0, true);
+                field = currentSudokuBoard.getField(i);
             }
+            
+            Bindings.bindBidirectional(textFields.get(i).textProperty(), field.getProperty(), stringConverter);
+            textFields.get(i).textProperty().addListener((observable, oldValue, newValue) -> {
+                checkTheCorrectness();
+              });
+
         }
     }
 
@@ -202,8 +229,6 @@ public class BoardWindowController implements Initializable {
         TextFormatter<String> formatter = new TextFormatter<String>((Change change) -> {
             String newText = change.getControlNewText();
             if (newText.isEmpty()) {
-                currentSudokuBoard.setNull(boardIndex);
-                checkTheCorrectness();
                 return change;
             }
 
@@ -212,8 +237,6 @@ public class BoardWindowController implements Initializable {
             } else if (Integer.parseInt(newText) < 1 || Integer.parseInt(newText) > 9) {
                 return null;
             } else {
-                currentSudokuBoard.set(boardIndex, Integer.parseInt(newText), !textField.isDisabled());
-                checkTheCorrectness();
                 return change;
             }
         });

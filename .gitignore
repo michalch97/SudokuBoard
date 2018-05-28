@@ -5,3 +5,5 @@ target/
 .settings/
 *.iml
 *.sudoku
+Model/log*.txt
+ViewProject/log*.txt
