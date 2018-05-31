@@ -8,44 +8,61 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane prefHeight="390.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardWindowController">
-   <center>
-      <GridPane fx:id="boardGridPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" vgap="5.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <BorderPane.margin>
-            <Insets bottom="5.0" top="5.0" />
-         </BorderPane.margin>
-      </GridPane>
-   </center>
-   <bottom>
-      <BorderPane prefWidth="254.0" BorderPane.alignment="CENTER_RIGHT">
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </BorderPane.margin>
-         <right>
-            <Button fx:id="checkBoardButton" mnemonicParsing="false" onAction="#onCheckButtonAction" prefHeight="31.0" prefWidth="100.0" text="Sprawdź" BorderPane.alignment="CENTER" />
-         </right>
-         <left>
-            <FlowPane prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER_LEFT">
-               <children>
-                  <Button fx:id="saveBoardButton" mnemonicParsing="false" onAction="#onSaveBoardButtonAction" prefHeight="31.0" text="Zapisz">
-                     <FlowPane.margin>
-                        <Insets right="10.0" />
-                     </FlowPane.margin>
-                  </Button>
-                  <Button fx:id="loadBoardButton" mnemonicParsing="false" onAction="#onLoadBoardButtonAction" prefHeight="31.0" text="Wczytaj" />
-               </children>
-            </FlowPane>
-         </left>
-      </BorderPane>
-   </bottom>
+<BorderPane prefHeight="390.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8.0.141"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardWindowController">
+    <center>
+        <GridPane fx:id="boardGridPane" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                  minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" vgap="5.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <BorderPane.margin>
+                <Insets bottom="5.0" top="5.0"/>
+            </BorderPane.margin>
+        </GridPane>
+    </center>
+    <bottom>
+        <BorderPane prefWidth="254.0" BorderPane.alignment="CENTER_RIGHT">
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </BorderPane.margin>
+            <right>
+                <Button fx:id="checkBoardButton" mnemonicParsing="false" onAction="#onCheckButtonAction"
+                        prefHeight="31.0" prefWidth="100.0" text="Sprawdź" BorderPane.alignment="CENTER"/>
+            </right>
+            <left>
+                <FlowPane prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER_LEFT">
+                    <children>
+                        <Button fx:id="saveBoardButton" mnemonicParsing="false" onAction="#onSaveBoardButtonAction"
+                                prefHeight="31.0" text="Zapisz">
+                            <FlowPane.margin>
+                                <Insets right="10.0"/>
+                            </FlowPane.margin>
+                        </Button>
+                        <Button fx:id="loadBoardButton" mnemonicParsing="false" onAction="#onLoadBoardButtonAction"
+                                prefHeight="31.0" text="Wczytaj">
+                            <FlowPane.margin>
+                                <Insets right="10.0"/>
+                            </FlowPane.margin>
+                        </Button>
+                        <Button fx:id="saveBoardToDB" mnemonicParsing="false" onAction="#onSavedBoardToDBButtonAction"
+                                prefHeight="31.0" text="Zapisz do bazy">
+                            <FlowPane.margin>
+                                <Insets right="10.0"/>
+                            </FlowPane.margin>
+                        </Button>
+                        <Button fx:id="loadBoardFromDB" mnemonicParsing="false"
+                                onAction="#onLoadBoardFromDBButtonAction" prefHeight="31.0" text="Wczytaj z bazy"/>
+                    </children>
+                </FlowPane>
+            </left>
+        </BorderPane>
+    </bottom>
 </BorderPane>

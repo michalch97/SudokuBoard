@@ -92,13 +92,13 @@ public class SudokuField implements Externalizable, Cloneable, Comparable<Sudoku
     }
     
     @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal(final ObjectOutput out) throws IOException {
          out.writeInt(value.get());
          out.writeBoolean(isUserProvidedField);
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         value = new SimpleIntegerProperty(in.readInt());
         isUserProvidedField = in.readBoolean();
     }

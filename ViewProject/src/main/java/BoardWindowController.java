@@ -1,22 +1,16 @@
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BoardWindowController implements Initializable {
     private static final String textFieldErrorCss = "TextFieldError.css";
@@ -37,12 +33,18 @@ public class BoardWindowController implements Initializable {
     private Button saveBoardButton;
     @FXML
     private Button loadBoardButton;
+    @FXML
+    private Button saveBoardToDB;
+    @FXML
+    private Button loadBoardFromDB;
 
     private BoardWindow boardWindow;
     private Stage guiParent;
     private List<TextField> textFields = new ArrayList<TextField>();
     private List<GridPane> boxesOfFields = new ArrayList<GridPane>();
     private SudokuBoard currentSudokuBoard;
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
 
     @FXML
     public void initialize() {
@@ -82,7 +84,7 @@ public class BoardWindowController implements Initializable {
         currentSudokuBoard = board;
         StringConverter<Number> stringConverter = new StringConverter<Number>() {
             @Override
-            public Number fromString(String arg0) {
+            public Number fromString(final String arg0) {
                 if (arg0.isEmpty()) {
                     return 0;
                 } else {
@@ -91,7 +93,7 @@ public class BoardWindowController implements Initializable {
             }
 
             @Override
-            public String toString(Number arg0) {
+            public String toString(final Number arg0) {
                 if (arg0.intValue() == 0) {
                     return "";
                 } else {
@@ -99,7 +101,7 @@ public class BoardWindowController implements Initializable {
                 }
             }
         };
-        
+
         for (int i = 0; i < 81; i++) {
             SudokuField field = currentSudokuBoard.getField(i);
 
@@ -114,11 +116,11 @@ public class BoardWindowController implements Initializable {
                 currentSudokuBoard.set(i, 0, true);
                 field = currentSudokuBoard.getField(i);
             }
-            
+
             Bindings.bindBidirectional(textFields.get(i).textProperty(), field.getProperty(), stringConverter);
             textFields.get(i).textProperty().addListener((observable, oldValue, newValue) -> {
                 checkTheCorrectness();
-              });
+            });
 
         }
     }
@@ -176,7 +178,7 @@ public class BoardWindowController implements Initializable {
                 serializator.write(currentSudokuBoard);
 
                 serializator.close();
-                System.out.println("Serialized");
+                log.info("Serialized");
             } catch (Exception e) {
                 Throwable te = new SudokuException("Serialization error");
                 te.initCause(e);
@@ -197,7 +199,7 @@ public class BoardWindowController implements Initializable {
                 SudokuBoard deserializedBoard = serializator.read();
 
                 serializator.close();
-                System.out.println("Deserialized");
+                log.info("Deserialized");
 
                 setSudokuBoard(deserializedBoard);
             } catch (Exception e) {
@@ -254,6 +256,47 @@ public class BoardWindowController implements Initializable {
             field.setStyle(null);
             field.getStyleClass().add("text-field");
             field.getStyleClass().add("text-input");
+        }
+    }
+
+    public void onSavedBoardToDBButtonAction(final ActionEvent actionEvent) {
+        String boardName = "";
+        TextInputDialog dialog = new TextInputDialog("nazwa");
+        dialog.setTitle("Zapisywanie tablicy");
+        dialog.setHeaderText("Wybierz nazwę pod jaką ma być zapisana tablica");
+        dialog.setContentText("Nazwa tablicy:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            boardName = result.get();
+        }
+        try {
+            JdbcSudokuBoardDao jdbcSudokuBoardDao = new JdbcSudokuBoardDao(boardName);
+            jdbcSudokuBoardDao.write(currentSudokuBoard);
+            jdbcSudokuBoardDao.close();
+            log.info("Saved in database");
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    public void onLoadBoardFromDBButtonAction(final ActionEvent actionEvent) {
+        String boardName = "";
+        TextInputDialog dialog = new TextInputDialog("nazwa");
+        dialog.setTitle("Wczytywanie tablicy");
+        dialog.setHeaderText("Wybierz nazwę tablicy do wczytania");
+        dialog.setContentText("Nazwa tablicy:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            boardName = result.get();
+        }
+        try {
+            JdbcSudokuBoardDao jdbcSudokuBoardDao = new JdbcSudokuBoardDao(boardName);
+            SudokuBoard sudokuBoard = jdbcSudokuBoardDao.read();
+            jdbcSudokuBoardDao.close();
+            setSudokuBoard(sudokuBoard);
+            log.info("Loaded from database");
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 }
