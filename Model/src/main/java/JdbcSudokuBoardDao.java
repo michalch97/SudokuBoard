@@ -89,4 +89,10 @@ public class JdbcSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
             }
         }
     }
+
+    public boolean checkIfExist(final String name) throws Throwable {
+        String selectQuery = "SELECT * FROM SudokuBoards WHERE board_name = \'" + name + "\'";
+        ResultSet resultSet = statement.executeQuery(selectQuery);
+        return resultSet.next();
+    }
 }
